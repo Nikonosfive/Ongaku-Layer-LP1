@@ -1,63 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tx Listening Player</title>
+  <title>Tx.Listener Widget by TADR</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f9;
       color: #333;
-      padding: 20px;
+      display: flex;
+      padding: 0px;
+      margin: 0px;
+      word-break: keep-all;
     }
 
     li {
       list-style: none;
-      padding: 0.2rem;
-      margin: 0.2rem;
+      padding: 0.35rem;
+      border-radius: 5px;
+      margin: 0rem;
+      z-index: 1;
     }
-    
-    li:hover{
-      background-color: #007BFF;
-      color: white;
+
+    li:hover {
+      background-color: #dddddd;
+      color: #000000;
     }
-    
-    ul { 
+
+    ul {
       padding-left: 0;
+      z-index: 1;
+    }
+
+    #currentTrackName {
+      font-size: 1.4rem;
     }
 
     #playerContainer {
-      margin: 20px auto;
       max-width: 600px;
     }
+    
+    .toolbar{
+      position: fixed;
+      height: min(240px, 42vh);
+      overflow: scroll;
+      width: calc(100vw - 20px);
+      margin: 0px;
+      padding-left: 10px;
+      padding-top: 10px;
+    }
 
-    button {
-      padding: 10px;
-      margin: 5px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;  
-      background-color: #dddddd;
+    .playlist{
+      height: calc(100vh - min(250px, 42vh));
+      overflow: scroll;
+      position: relative;
+      top: min(250px, 42vh);
+      width: calc(100vw - 20px);
+      padding-left: 10px;
+      z-index: 1;
     }
     
-    button:hover{
-      opacity: 70%;
+    .divbutton, button, select {
+      padding: 8px;
+      margin: 4px;
+      border: 3px solid #dddddd;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #dddddd;
+      max-width: 80vw;
+      
+    }
+    
+    .divbutton{
+      display: inline;
+      width: 120px;
+      z-index: 3;
+      height: 30px;
+      margin-right: 60px;
+      background-color: #007BFF;
+      color: white;
+      border: 0px;
     }
 
+    .input {
+      display: none;
+      width: 100%;
+      padding: 0px;
+      margin-top: 5px;
+      border: 0px solid #cccccc;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #cccccc;
+    }
+
+    button:hover {
+      background-color: #cccccc;
+    }
+
+    select:hover {
+      background-color: #cccccc;
+    }
+
+    .divbutton:hover {
+      background-color: #cccccc;
+      color: black;
+    }
+
+    
     button.active {
       background-color: #007BFF;
       color: white;
     }
-  
+
     #progressContainer {
       margin: 10px 0;
-      width: 100%;
+      width: 90vw;
       height: 10px;
       background: #ddd;
       border-radius: 5px;
       position: relative;
       cursor: pointer;
+      z-index: 1;
     }
 
     #progress {
@@ -65,56 +130,144 @@
       height: 100%;
       width: 0%;
       transition: width 0.1s linear;
+      border-radius: 5px;
+      z-index: 1;
     }
 
     #playlist {
       margin-top: 20px;
     }
-    
+
     #playlist .nowPlaying {
       background-color: #007BFF;
       color: white;
+    }
+
+    .tooltip, .tooltip1, .tooltip2, .tooltip3, .tooltip4, .tooltip5, .tooltip6, .tooltip7, .tooltip8, .tooltip9 ,.tooltip10 {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .tooltip-text, .tooltip-text1, .tooltip-text2, .tooltip-text3, .tooltip-text4, .tooltip-text5, .tooltip-text6, .tooltip-text7, .tooltip-text8, .tooltip-text9, .tooltip-text10 {
+      opacity: 0;
+      visibility: hidden;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -30px;
+      display: inline-block;
+      padding: 5px;
+      white-space: nowrap;
+      font-size: 0.8rem;
+      line-height: 1.3;
+      background: #333;
+      color: #fff;
+      border-radius: 3px;
+      transition: 0.3s ease-in;
+      z-index: 10000;
+    }
+
+    .tooltip:hover .tooltip-text {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip1:hover .tooltip-text1 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip2:hover .tooltip-text2 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip3:hover .tooltip-text3 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip4:hover .tooltip-text4 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip5:hover .tooltip-text5 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip6:hover .tooltip-text6 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip7:hover .tooltip-text7 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip8:hover .tooltip-text8 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip9:hover .tooltip-text9 {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .tooltip10:hover .tooltip-text10 {
+      opacity: 1;
+      visibility: visible;
     }
   </style>
 </head>
 
 <body>
-  <h1>Tx.LP</h1>
   <div id="playerContainer">
+    <div class="toolbar">
     <audio id="audio"></audio>
     <div id="progressContainer">
       <div id="progress"></div>
     </div>
-        <p id="currentTime">00:00 / 00:00</p>
+    <p id="currentTime">00:00 / 00:00</p>
     <p id="currentTrackName">No track playing</p>
     <div>
       <div>
-      <button id="prevBtn">⏮</button>
-      <button id="playPauseBtn">▶️</button>
-      <button id="nextBtn">⏭</button>
-      <button id="shuffleBtn">🔀</button>
-      <select id="repeatSelect">
-        <option value="none">🔁 OFF</option>
-        <option value="all">🔁 All</option>
-        <option value="one">🔁 One</option>
-      </select>
-      <select id="speedSelect">
-        <option value="0.5">0.5x</option>
-        <option value="1" selected>1x</option>
-        <option value="1.5">1.5x</option>
-        <option value="2">2x</option>
-      </select>
+        <button id="prevBtn" class="tooltip1"><span class="tooltip-text1">戻る</span>⏮</button>
+        <button id="playPauseBtn" class="tooltip2"><span class="tooltip-text2">再生 / 停止</span>▶️</button>
+        <button id="nextBtn" class="tooltip3"><span class="tooltip-text3">進む</span>⏭</button>
+        <button id="shuffleBtn" class="tooltip4"><span class="tooltip-text4">シャッフル</span>🔀</button>
+        <select id="repeatSelect" class="tooltip5"><span class="tooltip-text5">戻る</span>
+          <option value="none">🔁 OFF</option>
+          <option value="all">🔁 All</option>
+          <option value="one">🔁 One</option>
+        </select>
+        <select id="speedSelect" class="tooltip">
+          <option value="0.5" class="tooltip">0.5x</option>
+          <option value="0.75" class="tooltip">0.75x</option>
+          <option value="1" class="tooltip" selected>1x</option>
+          <option value="1.25" class="tooltip">1.25x</option>
+          <option value="1.5" class="tooltip">1.5x</option>
+          <option value="1.75" class="tooltip">1.75x</option>
+          <option value="2" class="tooltip">2x</option>
+        </select>
+      </div>
+      <div>
+        <button id="backward5s" class="tooltip6"><span class="tooltip-text6">5秒戻る</span>⏪ 5s</button>
+        <button id="forward5s" class="tooltip7"><span class="tooltip-text7">5秒進む</span>5s ⏩</button>
+        <button id="abSetA" class="tooltip8"><span class="tooltip-text8">リピート始点を設定</span>A</button>
+        <button id="abSetB" class="tooltip9"><span class="tooltip-text9">リピート終点を設定</span>B</button>
+        <button id="abReset" class="tooltip10"><span class="tooltip-text10">始点 / 終点をリセット</span>🗑️AB</button>        <div class="divbutton" id="selectbutton">Input</div>
+
+      </div>
+      <input type="file" id="playlistInput" class="input"multiple>
     </div>
-    <div>
-      <button id="backward5s">⏪ 5s</button>
-      <button id="forward5s">⏩ 5s</button>
-      <button id="abSetA">Set A</button>
-      <button id="abSetB">Set B</button>
-      <button id="abReset">Reset AB</button>
     </div>
-      <input type="file" id="playlistInput" multiple>
-    </div>
-    <ul id="playlist"></ul>
+    <div class="playlist">
+    <ul id="playlist"></ul
+      </div>
   </div>
   <script>
     const audio = document.getElementById('audio');
@@ -184,8 +337,8 @@
     function updateABTimes() {
       const a = abPoints.a !== null ? formatTime(abPoints.a) : 'Not Set';
       const b = abPoints.b !== null ? formatTime(abPoints.b) : 'Not Set';
-      abSetA.textContent = `Set A (${a})`;
-      abSetB.textContent = `Set B (${b})`;
+      abSetA.textContent = `A (${a})`;
+      abSetB.textContent = `B (${b})`;
     }
 
     function formatTime(seconds) {
@@ -212,7 +365,7 @@
         audio.currentTime = newTime;
       }
     }
-    
+
     function updatePlaylistHighlight() {
       Array.from(playlistUI.children).forEach((li, index) => {
         if (index === currentIndex) {
@@ -222,7 +375,6 @@
         }
       });
     }
-
     audio.addEventListener('timeupdate', () => {
       updateProgress();
       if (abPoints.a !== null && abPoints.b !== null) {
@@ -277,7 +429,7 @@
         name: file.name,
         url: URL.createObjectURL(file),
       }));
-      playlistUI.innerHTML = playlist.map((file, index) => 
+      playlistUI.innerHTML = playlist.map((file, index) =>
         `<li data-index="${index}">${file.name}</li>`
       ).join('');
       loadTrack(0);
@@ -292,6 +444,11 @@
     // Initial AB points display update
     updateABTimes();
   </script>
+    <script>
+    document.querySelector("#selectbutton").addEventListener("click", () => {
+  document.querySelector("input").click();
+});
+  </script>
 </body>
-</html>
 
+</html>
