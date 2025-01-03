@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tx Listening Player</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      padding: 20px;
+    }
+
+    li {
+      list-style: none;
+      padding: 0.2rem;
+      margin: 0.2rem;
+    }
+    
+    li:hover{
+      background-color: #007BFF;
+      color: white;
+    }
+    
+    ul { 
+      padding-left: 0;
+    }
+
+    #playerContainer {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+
+    button {
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;  
+      background-color: #dddddd;
+    }
+    
+    button:hover{
+      opacity: 70%;
+    }
+
+    button.active {
+      background-color: #007BFF;
+      color: white;
+    }
+  
+    #progressContainer {
+      margin: 10px 0;
+      width: 100%;
+      height: 10px;
+      background: #ddd;
+      border-radius: 5px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    #progress {
+      background: #007BFF;
+      height: 100%;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    #playlist {
+      margin-top: 20px;
+    }
+    
+    #playlist .nowPlaying {
+      background-color: #007BFF;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Tx.LP</h1>
+  <div id="playerContainer">
+    <audio id="audio"></audio>
+    <div id="progressContainer">
+      <div id="progress"></div>
+    </div>
+        <p id="currentTime">00:00 / 00:00</p>
+    <p id="currentTrackName">No track playing</p>
+    <div>
+      <div>
+      <button id="prevBtn">⏮</button>
+      <button id="playPauseBtn">▶️</button>
+      <button id="nextBtn">⏭</button>
+      <button id="shuffleBtn">🔀</button>
+      <select id="repeatSelect">
+        <option value="none">🔁 OFF</option>
+        <option value="all">🔁 All</option>
+        <option value="one">🔁 One</option>
+      </select>
+      <select id="speedSelect">
+        <option value="0.5">0.5x</option>
+        <option value="1" selected>1x</option>
+        <option value="1.5">1.5x</option>
+        <option value="2">2x</option>
+      </select>
+    </div>
+    <div>
+      <button id="backward5s">⏪ 5s</button>
+      <button id="forward5s">⏩ 5s</button>
+      <button id="abSetA">Set A</button>
+      <button id="abSetB">Set B</button>
+      <button id="abReset">Reset AB</button>
+    </div>
+      <input type="file" id="playlistInput" multiple>
+    </div>
+    <ul id="playlist"></ul>
+  </div>
+  <script>
+    const audio = document.getElementById('audio');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const repeatSelect = document.getElementById('repeatSelect');
+    const speedSelect = document.getElementById('speedSelect');
+    const abSetA = document.getElementById('abSetA');
+    const abSetB = document.getElementById('abSetB');
+    const abReset = document.getElementById('abReset');
+    const backward5s = document.getElementById('backward5s');
+    const forward5s = document.getElementById('forward5s');
+    const currentTrackName = document.getElementById('currentTrackName');
+    const currentTime = document.getElementById('currentTime');
+    const progressContainer = document.getElementById('progressContainer');
+    const progress = document.getElementById('progress');
+    const playlistInput = document.getElementById('playlistInput');
+    const playlistUI = document.getElementById('playlist');
+    let playlist = [];
+    let currentIndex = 0;
+    let isShuffling = false;
+    let isRepeating = 'none'; // none, all, one
+    let abPoints = {
+      a: null,
+      b: null
+    };
+
+    function loadTrack(index) {
+      const track = playlist[index];
+      if (!track) return;
+      currentIndex = index;
+      audio.src = track.url;
+      currentTrackName.textContent = track.name;
+      audio.load();
+      playPauseBtn.textContent = '▶️';
+      updatePlaylistHighlight();
+    }
+
+    function playPauseTrack() {
+      if (audio.paused) {
+        audio.play();
+        playPauseBtn.textContent = '⏸';
+      } else {
+        audio.pause();
+        playPauseBtn.textContent = '▶️';
+      }
+    }
+
+    function nextTrack() {
+      if (isShuffling) {
+        currentIndex = Math.floor(Math.random() * playlist.length);
+      } else {
+        currentIndex = (currentIndex + 1) % playlist.length;
+      }
+      loadTrack(currentIndex);
+      audio.play();
+    }
+
+    function prevTrack() {
+      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      loadTrack(currentIndex);
+      audio.play();
+    }
+
+    function updateABTimes() {
+      const a = abPoints.a !== null ? formatTime(abPoints.a) : 'Not Set';
+      const b = abPoints.b !== null ? formatTime(abPoints.b) : 'Not Set';
+      abSetA.textContent = `Set A (${a})`;
+      abSetB.textContent = `Set B (${b})`;
+    }
+
+    function formatTime(seconds) {
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
+      return `${min}:${sec}`;
+    }
+
+    function updateProgress() {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = `${percent}%`;
+      currentTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+    }
+
+    function setProgress(e) {
+      const totalWidth = progressContainer.offsetWidth;
+      const clickX = e.offsetX;
+      const newTime = (clickX / totalWidth) * audio.duration;
+      if (abPoints.a !== null && newTime < abPoints.a) {
+        audio.currentTime = abPoints.a;
+      } else if (abPoints.b !== null && newTime > abPoints.b) {
+        audio.currentTime = abPoints.b;
+      } else {
+        audio.currentTime = newTime;
+      }
+    }
+    
+    function updatePlaylistHighlight() {
+      Array.from(playlistUI.children).forEach((li, index) => {
+        if (index === currentIndex) {
+          li.classList.add('nowPlaying');
+        } else {
+          li.classList.remove('nowPlaying');
+        }
+      });
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      if (abPoints.a !== null && abPoints.b !== null) {
+        if (audio.currentTime > abPoints.b || audio.currentTime < abPoints.a) {
+          audio.currentTime = abPoints.a;
+        }
+      }
+    });
+    audio.addEventListener('ended', () => {
+      if (isRepeating === 'one') {
+        audio.currentTime = 0;
+        audio.play();
+      } else if (isRepeating === 'all' || currentIndex < playlist.length - 1) {
+        nextTrack();
+      }
+    });
+    playPauseBtn.addEventListener('click', playPauseTrack);
+    prevBtn.addEventListener('click', prevTrack);
+    nextBtn.addEventListener('click', nextTrack);
+    shuffleBtn.addEventListener('click', () => {
+      isShuffling = !isShuffling;
+      shuffleBtn.classList.toggle('active', isShuffling);
+    });
+    repeatSelect.addEventListener('change', () => {
+      isRepeating = repeatSelect.value;
+    });
+    speedSelect.addEventListener('input', () => {
+      audio.playbackRate = parseFloat(speedSelect.value);
+    });
+    abSetA.addEventListener('click', () => {
+      abPoints.a = audio.currentTime;
+      updateABTimes();
+    });
+    abSetB.addEventListener('click', () => {
+      abPoints.b = audio.currentTime;
+      updateABTimes();
+    });
+    abReset.addEventListener('click', () => {
+      abPoints.a = null;
+      abPoints.b = null;
+      updateABTimes();
+    });
+    backward5s.addEventListener('click', () => {
+      audio.currentTime = Math.max(0, audio.currentTime - 5);
+    });
+    forward5s.addEventListener('click', () => {
+      audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+    });
+    progressContainer.addEventListener('click', setProgress);
+    playlistInput.addEventListener('change', (e) => {
+      playlist = Array.from(e.target.files).map(file => ({
+        name: file.name,
+        url: URL.createObjectURL(file),
+      }));
+      playlistUI.innerHTML = playlist.map((file, index) => 
+        `<li data-index="${index}">${file.name}</li>`
+      ).join('');
+      loadTrack(0);
+    });
+    playlistUI.addEventListener('click', (e) => {
+      const index = e.target.dataset.index;
+      if (index !== undefined) {
+        loadTrack(Number(index));
+        audio.play();
+      }
+    });
+    // Initial AB points display update
+    updateABTimes();
+  </script>
+</body>
+</html>
+
