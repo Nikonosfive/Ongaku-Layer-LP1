@@ -8,7 +8,9 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+      background-color: #dddddd
+        /*#f4f4f9*/
+      ;
       color: #333;
       display: flex;
       padding: 0px;
@@ -18,21 +20,24 @@
 
     li {
       list-style: none;
+      border-bottom: 1px solid #cccccc;
       padding: 0.35rem;
       height: 1.2rem;
       width: calc(100vw - 40px);
       line-height: 1.2rem;
-      border-radius: 5px;
+      border-radius: 3px;
       margin: 0rem;
       z-index: 1;
       text-overflow: ellipsis;
-      white-space: nowrap ;
+      white-space: nowrap;
       overflow: hidden;
+      background: linear-gradient(#f4f4f9, #eeeeee);
     }
 
     li:hover {
-      background-color: #dddddd;
+      background: linear-gradient(#ffffff, #f4f4f9);
       color: #000000;
+      border-radius: 5px;
     }
 
     ul {
@@ -42,56 +47,73 @@
 
     #currentTrackName {
       font-size: 1.4rem;
+      padding: 0px;
+      margin: 0px;
+      margin-left: 15px;
     }
 
     #playerContainer {
       max-width: 100vw;
     }
-    
-    .toolbar{
+
+    .toolbar {
       position: fixed;
-      height: min(240px, 42vh);
+      height: calc(53px + 7rem + 10px);
       overflow: scroll;
-      width: calc(100vw - 20px);
+      width: calc(100vw - 10px);
       margin: 0px;
       padding-left: 10px;
       padding-top: 10px;
-      background-color: #f4f4f9;
+      background-color: #dddddd;
       z-index: 5;
     }
 
-    .playlist{
-      height: calc(100vh - min(250px, 42vh));
+    .playlist {
+      height: calc(100vh - 53px - 7rem - 10px);
       overflow: scroll;
       position: relative;
-      top: min(250px, 42vh);
-      width: calc(100vw - 20px);
+      top: calc(53px + 7rem + 10px);
+      width: calc(100vw - 10px);
       padding-left: 10px;
       z-index: 1;
+      background-color: #dddddd;
     }
-    
-    .divbutton, button, select {
+
+    button,
+    select {
+      padding: 12px;
+      padding-bottom: 0px;
+      padding-top: 0px;
+      height: 2rem;
+      margin: -2px;
+      margin-top: 3px;
+      border: 0px;
+      border-right: 1px solid #dddddd;
+      border-radius: 3px;
+      cursor: pointer;
+      background: linear-gradient(#eeeeee, #cccccc);
+      max-width: 80vw;
+    }
+
+    .divbutton {
       padding: 8px;
       margin: 4px;
-      border: 3px solid #dddddd;
+      border: 0px solid #dddddd;
       border-radius: 5px;
       cursor: pointer;
-      background-color: #dddddd;
       max-width: 80vw;
-      
-    }
-    
-    .divbutton{
       display: inline-block;
       width: 50px;
       z-index: 3;
-      height: 16px;
-      background-color: #007BFF;
+      font-size: 0.8rem;
+      height: 0.8rem;
+      background: linear-gradient(#33AEFF, #007BFF);
       color: white;
-      border: 0px;
       text-align: center;
       vertical-align: middle;
     }
+
+    .buttons {}
 
     .input {
       display: none;
@@ -104,30 +126,53 @@
       background-color: #cccccc;
     }
 
+    #currentTime {
+        display: flex;
+  justify-content: flex-end;
+      padding: 0px;
+      margin: 0px;
+      padding-right: 20px;
+      font-size: 1rem;
+    }
+
     button:hover {
-      background-color: #cccccc;
+      background: linear-gradient(#cccccc, #cccccc);
     }
 
     select:hover {
-      background-color: #cccccc;
+      background: linear-gradient(#cccccc, #cccccc);
     }
 
     .divbutton:hover {
-      background-color: #cccccc;
-      color: black;
+      background: linear-gradient(#007BFF, #0048CC);
+      color: white;
     }
 
-    
     button.active {
-      background-color: #007BFF;
+      background: linear-gradient(#33AEFF, #007BFF);
       color: white;
+    }
+
+    .currenttrack {
+      background: linear-gradient(#ececec, #dcdcdc);
+      width: calc(100vw - 30px);
+      padding: 2px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: scroll;
+      border-radius: 5px;
+      height: 2rem;
+      line-height: 2rem;
     }
 
     #progressContainer {
       margin: 10px 0;
-      width: calc(100vw-20px);
+      width: calc(100vw - 25px);
       height: 10px;
-      background: #ddd;
+      background: #eeeeee;
       border-radius: 5px;
       position: relative;
       cursor: pointer;
@@ -135,7 +180,7 @@
     }
 
     #progress {
-      background: #007BFF;
+      background: linear-gradient(#33AEFF, #007BFF);
       height: 100%;
       width: 0%;
       transition: width 0.1s linear;
@@ -148,16 +193,41 @@
     }
 
     #playlist .nowPlaying {
-      background-color: #007BFF;
+      background: linear-gradient(#33AEFF, #007BFF);
       color: white;
+      border-radius: 5px;
     }
 
-    .tooltip, .tooltip1, .tooltip2, .tooltip3, .tooltip4, .tooltip5, .tooltip6, .tooltip7, .tooltip8, .tooltip9 ,.tooltip10 {
+    #playlist .nowPlaying:hover {
+      background: linear-gradient(#33AEFF, #006AFF);
+    }
+
+    .tooltip,
+    .tooltip1,
+    .tooltip2,
+    .tooltip3,
+    .tooltip4,
+    .tooltip5,
+    .tooltip6,
+    .tooltip7,
+    .tooltip8,
+    .tooltip9,
+    .tooltip10 {
       position: relative;
       cursor: pointer;
     }
 
-    .tooltip-text, .tooltip-text1, .tooltip-text2, .tooltip-text3, .tooltip-text4, .tooltip-text5, .tooltip-text6, .tooltip-text7, .tooltip-text8, .tooltip-text9, .tooltip-text10 {
+    .tooltip-text,
+    .tooltip-text1,
+    .tooltip-text2,
+    .tooltip-text3,
+    .tooltip-text4,
+    .tooltip-text5,
+    .tooltip-text6,
+    .tooltip-text7,
+    .tooltip-text8,
+    .tooltip-text9,
+    .tooltip-text10 {
       opacity: 0;
       visibility: hidden;
       position: absolute;
@@ -180,399 +250,393 @@
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip1:hover .tooltip-text1 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip2:hover .tooltip-text2 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip3:hover .tooltip-text3 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip4:hover .tooltip-text4 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip5:hover .tooltip-text5 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip6:hover .tooltip-text6 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip7:hover .tooltip-text7 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip8:hover .tooltip-text8 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip9:hover .tooltip-text9 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     .tooltip10:hover .tooltip-text10 {
       opacity: 1;
       visibility: visible;
     }
-    
+
     #playlist li {
-    cursor: grab;
-  }
-  #playlist li.dragging {
-    opacity: 0.5;
-  }
-    
+      cursor: grab;
+    }
+
+    #playlist li.dragging {
+      opacity: 0.5;
+    }
   </style>
 </head>
 
 <body>
   <div id="playerContainer">
     <div class="toolbar">
-    <audio id="audio"></audio>
-    <div id="progressContainer">
-      <div id="progress"></div>
-    </div>
-    <p id="currentTime">00:00 / 00:00</p>
-    <p id="currentTrackName">No track playing</p>
-    <div>
-      <div>
-        <button id="prevBtn" class="tooltip1"><span class="tooltip-text1">戻る</span>⏮</button>
-        <button id="playPauseBtn" class="tooltip2"><span class="tooltip-text2">再生 / 停止</span>▶️</button>
-        <button id="nextBtn" class="tooltip3"><span class="tooltip-text3">進む</span>⏭</button>
-        <button id="shuffleBtn" class="tooltip4"><span class="tooltip-text4">シャッフル</span>🔀</button>
-        <select id="repeatSelect" class="tooltip5"><span class="tooltip-text5">戻る</span>
-          <option value="none">🔁 OFF</option>
-          <option value="all">🔁 All</option>
-          <option value="one">🔁 One</option>
-        </select>
-        <select id="speedSelect" class="tooltip">
-          <option value="0.5" class="tooltip">0.5x</option>
-          <option value="0.75" class="tooltip">0.75x</option>
-          <option value="1" class="tooltip" selected>1x</option>
-          <option value="1.25" class="tooltip">1.25x</option>
-          <option value="1.5" class="tooltip">1.5x</option>
-          <option value="1.75" class="tooltip">1.75x</option>
-          <option value="2" class="tooltip">2x</option>
-        </select>
+      <audio id="audio"></audio>
+      <div class="progressClass" id="progressContainer">
+        <div id="progress"></div>
+      </div>
+      <p id="currentTime">00:00 / 00:00</p>
+      <div class="currenttrack">
+        <p id="currentTrackName">No track playing</p>
       </div>
       <div>
-        <button id="backward5s" class="tooltip6"><span class="tooltip-text6">5秒戻る</span>⏪ 5s</button>
-        <button id="forward5s" class="tooltip7"><span class="tooltip-text7">5秒進む</span>5s ⏩</button>
-        <button id="abSetA" class="tooltip8"><span class="tooltip-text8">リピート始点を設定</span>A</button>
-        <button id="abSetB" class="tooltip9"><span class="tooltip-text9">リピート終点を設定</span>B</button>
-        <button id="abReset" class="tooltip10"><span class="tooltip-text10">始点 / 終点をリセット</span>🗑️ A / B</button>        <div class="divbutton" id="selectbutton">Input</div>
+        <div class="buttons">
+          <button id="prevBtn" class="tooltip1"><span class="tooltip-text1">戻る</span>⏮</button>
+          <button id="playPauseBtn" class="tooltip2"><span class="tooltip-text2">再生 / 停止</span>▶️</button>
+          <button id="nextBtn" class="tooltip3"><span class="tooltip-text3">進む</span>⏭</button>
+          <button id="shuffleBtn" class="tooltip4"><span class="tooltip-text4">シャッフル</span>🔀</button>
+          <select id="repeatSelect" class="tooltip5"><span class="tooltip-text5">戻る</span>
+            <option value="none">🔁 OFF</option>
+            <option value="all">🔁 All</option>
+            <option value="one">🔁 One</option>
+          </select>
+          <select id="speedSelect" class="tooltip">
+            <option value="0.5" class="tooltip">0.5x</option>
+            <option value="0.75" class="tooltip">0.75x</option>
+            <option value="1" class="tooltip" selected>1x</option>
+            <option value="1.25" class="tooltip">1.25x</option>
+            <option value="1.5" class="tooltip">1.5x</option>
+            <option value="1.75" class="tooltip">1.75x</option>
+            <option value="2" class="tooltip">2x</option>
+          </select>
 
+          <button id="backward5s" class="tooltip6"><span class="tooltip-text6">5秒戻る</span>⏪ 5s</button>
+          <button id="forward5s" class="tooltip7"><span class="tooltip-text7">5秒進む</span>5s ⏩</button>
+          <button id="abSetA" class="tooltip8"><span class="tooltip-text8">リピート始点を設定</span>A</button>
+          <button id="abSetB" class="tooltip9"><span class="tooltip-text9">リピート終点を設定</span>B</button>
+          <button id="abReset" class="tooltip10"><span class="tooltip-text10">始点 / 終点をリセット</span>🗑️ A / B</button>
+          <div class="divbutton" id="selectbutton">Input</div>
+        </div>
+        <div>
+
+        </div>
+        <input type="file" id="playlistInput" class="input" multiple>
       </div>
-      <input type="file" id="playlistInput" class="input"multiple>
-    </div>
     </div>
     <div class="playlist">
-    <ul id="playlist"></ul
-      </div>
-  </div>
-  <script>
-    const audio = document.getElementById('audio');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const repeatSelect = document.getElementById('repeatSelect');
-    const speedSelect = document.getElementById('speedSelect');
-    const abSetA = document.getElementById('abSetA');
-    const abSetB = document.getElementById('abSetB');
-    const abReset = document.getElementById('abReset');
-    const backward5s = document.getElementById('backward5s');
-    const forward5s = document.getElementById('forward5s');
-    const currentTrackName = document.getElementById('currentTrackName');
-    const currentTime = document.getElementById('currentTime');
-    const progressContainer = document.getElementById('progressContainer');
-    const progress = document.getElementById('progress');
-    const playlistInput = document.getElementById('playlistInput');
-    const playlistUI = document.getElementById('playlist');
-    let playlist = [];
-    let currentIndex = 0;
-    let isShuffling = false;
-    let isRepeating = 'none'; // none, all, one
-    let abPoints = {
-      a: null,
-      b: null
-    };
+      <ul id="playlist"></ul </div>
+    </div>
+    <script>
+      const audio = document.getElementById('audio');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const shuffleBtn = document.getElementById('shuffleBtn');
+      const repeatSelect = document.getElementById('repeatSelect');
+      const speedSelect = document.getElementById('speedSelect');
+      const abSetA = document.getElementById('abSetA');
+      const abSetB = document.getElementById('abSetB');
+      const abReset = document.getElementById('abReset');
+      const backward5s = document.getElementById('backward5s');
+      const forward5s = document.getElementById('forward5s');
+      const currentTrackName = document.getElementById('currentTrackName');
+      const currentTime = document.getElementById('currentTime');
+      const progressContainer = document.getElementById('progressContainer');
+      const progress = document.getElementById('progress');
+      const playlistInput = document.getElementById('playlistInput');
+      const playlistUI = document.getElementById('playlist');
+      let playlist = [];
+      let currentIndex = 0;
+      let isShuffling = false;
+      let isRepeating = 'none'; // none, all, one
+      let abPoints = {
+        a: null,
+        b: null
+      };
 
-    function loadTrack(index) {
-      const track = playlist[index];
-      if (!track) return;
-      currentIndex = index;
-      audio.src = track.url;
-      currentTrackName.textContent = track.name;
-      audio.load();
-      playPauseBtn.textContent = '▶️';
-      updatePlaylistHighlight();
-    }
-
-    function playPauseTrack() {
-      if (audio.paused) {
-        audio.play();
-        playPauseBtn.textContent = '⏸';
-      } else {
-        audio.pause();
+      function loadTrack(index) {
+        const track = playlist[index];
+        if (!track) return;
+        currentIndex = index;
+        audio.src = track.url;
+        currentTrackName.textContent = track.name;
+        audio.load();
         playPauseBtn.textContent = '▶️';
+        updatePlaylistHighlight();
       }
-    }
 
-    function nextTrack() {
-      if (isShuffling) {
-        currentIndex = Math.floor(Math.random() * playlist.length);
-      } else {
-        currentIndex = (currentIndex + 1) % playlist.length;
-      }
-      loadTrack(currentIndex);
-      audio.play();
-    }
-
-    function prevTrack() {
-      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-      loadTrack(currentIndex);
-      audio.play();
-    }
-
-    function updateABTimes() {
-      const a = abPoints.a !== null ? formatTime(abPoints.a) : 'Not Set';
-      const b = abPoints.b !== null ? formatTime(abPoints.b) : 'Not Set';
-      abSetA.textContent = `A (${a})`;
-      abSetB.textContent = `B (${b})`;
-    }
-
-    function formatTime(seconds) {
-      const min = Math.floor(seconds / 60);
-      const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
-      return `${min}:${sec}`;
-    }
-
-    function updateProgress() {
-      const percent = (audio.currentTime / audio.duration) * 100;
-      progress.style.width = `${percent}%`;
-      currentTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
-    }
-
-    function setProgress(e) {
-      const totalWidth = progressContainer.offsetWidth;
-      const clickX = e.offsetX;
-      const newTime = (clickX / totalWidth) * audio.duration;
-      if (abPoints.a !== null && newTime < abPoints.a) {
-        audio.currentTime = abPoints.a;
-      } else if (abPoints.b !== null && newTime > abPoints.b) {
-        audio.currentTime = abPoints.b;
-      } else {
-        audio.currentTime = newTime;
-      }
-    }
-
-    function updatePlaylistHighlight() {
-      Array.from(playlistUI.children).forEach((li, index) => {
-        if (index === currentIndex) {
-          li.classList.add('nowPlaying');
+      function playPauseTrack() {
+        if (audio.paused) {
+          audio.play();
+          playPauseBtn.textContent = '⏸';
         } else {
-          li.classList.remove('nowPlaying');
+          audio.pause();
+          playPauseBtn.textContent = '▶️';
+        }
+      }
+
+      function nextTrack() {
+        if (isShuffling) {
+          currentIndex = Math.floor(Math.random() * playlist.length);
+        } else {
+          currentIndex = (currentIndex + 1) % playlist.length;
+        }
+        loadTrack(currentIndex);
+        audio.play();
+      }
+
+      function prevTrack() {
+        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        loadTrack(currentIndex);
+        audio.play();
+      }
+
+      function updateABTimes() {
+        const a = abPoints.a !== null ? formatTime(abPoints.a) : 'Not Set';
+        const b = abPoints.b !== null ? formatTime(abPoints.b) : 'Not Set';
+        abSetA.textContent = `A (${a})`;
+        abSetB.textContent = `B (${b})`;
+      }
+
+      function formatTime(seconds) {
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
+        return `${min}:${sec}`;
+      }
+
+      function updateProgress() {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progress.style.width = `${percent}%`;
+        currentTime.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+      }
+
+      function setProgress(e) {
+        const totalWidth = progressContainer.offsetWidth;
+        const clickX = e.offsetX;
+        const newTime = (clickX / totalWidth) * audio.duration;
+        if (abPoints.a !== null && newTime < abPoints.a) {
+          audio.currentTime = abPoints.a;
+        } else if (abPoints.b !== null && newTime > abPoints.b) {
+          audio.currentTime = abPoints.b;
+        } else {
+          audio.currentTime = newTime;
+        }
+      }
+
+      function updatePlaylistHighlight() {
+        Array.from(playlistUI.children).forEach((li, index) => {
+          if (index === currentIndex) {
+            li.classList.add('nowPlaying');
+          } else {
+            li.classList.remove('nowPlaying');
+          }
+        });
+      }
+      audio.addEventListener('timeupdate', () => {
+        updateProgress();
+        if (abPoints.a !== null && abPoints.b !== null) {
+          if (audio.currentTime > abPoints.b || audio.currentTime < abPoints.a) {
+            audio.currentTime = abPoints.a;
+          }
         }
       });
-    }
-    audio.addEventListener('timeupdate', () => {
-      updateProgress();
-      if (abPoints.a !== null && abPoints.b !== null) {
-        if (audio.currentTime > abPoints.b || audio.currentTime < abPoints.a) {
-          audio.currentTime = abPoints.a;
+      audio.addEventListener('ended', () => {
+        if (isRepeating === 'one') {
+          audio.currentTime = 0;
+          audio.play();
+        } else if (isRepeating === 'all' || currentIndex < playlist.length - 1) {
+          nextTrack();
         }
-      }
-    });
-    audio.addEventListener('ended', () => {
-      if (isRepeating === 'one') {
-        audio.currentTime = 0;
-        audio.play();
-      } else if (isRepeating === 'all' || currentIndex < playlist.length - 1) {
-        nextTrack();
-      }
-    });
-    playPauseBtn.addEventListener('click', playPauseTrack);
-    prevBtn.addEventListener('click', prevTrack);
-    nextBtn.addEventListener('click', nextTrack);
-    shuffleBtn.addEventListener('click', () => {
-      isShuffling = !isShuffling;
-      shuffleBtn.classList.toggle('active', isShuffling);
-    });
-    repeatSelect.addEventListener('change', () => {
-      isRepeating = repeatSelect.value;
-    });
-    speedSelect.addEventListener('input', () => {
-      audio.playbackRate = parseFloat(speedSelect.value);
-    });
-    abSetA.addEventListener('click', () => {
-      abPoints.a = audio.currentTime;
-      updateABTimes();
-    });
-    abSetB.addEventListener('click', () => {
-      abPoints.b = audio.currentTime;
-      updateABTimes();
-    });
-    abReset.addEventListener('click', () => {
-      abPoints.a = null;
-      abPoints.b = null;
-      updateABTimes();
-    });
-    backward5s.addEventListener('click', () => {
-      audio.currentTime = Math.max(0, audio.currentTime - 5);
-    });
-    forward5s.addEventListener('click', () => {
-      audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
-    });
-    progressContainer.addEventListener('click', setProgress);
-    playlistInput.addEventListener('change', (e) => {
-      playlist = Array.from(e.target.files).map(file => ({
-        name: file.name,
-        url: URL.createObjectURL(file),
-      }));
-      playlistUI.innerHTML = playlist.map((file, index) => {
-  const audioTemp = new Audio(file.url);
-  audioTemp.addEventListener('loadedmetadata', () => {
-    const duration = formatTime(audioTemp.duration);
-    document.querySelector(`#track-duration-${index}`).textContent = duration;
-  });
-  return `<li data-index="${index}">
+      });
+      playPauseBtn.addEventListener('click', playPauseTrack);
+      prevBtn.addEventListener('click', prevTrack);
+      nextBtn.addEventListener('click', nextTrack);
+      shuffleBtn.addEventListener('click', () => {
+        isShuffling = !isShuffling;
+        shuffleBtn.classList.toggle('active', isShuffling);
+      });
+      repeatSelect.addEventListener('change', () => {
+        isRepeating = repeatSelect.value;
+      });
+      speedSelect.addEventListener('input', () => {
+        audio.playbackRate = parseFloat(speedSelect.value);
+      });
+      abSetA.addEventListener('click', () => {
+        abPoints.a = audio.currentTime;
+        updateABTimes();
+      });
+      abSetB.addEventListener('click', () => {
+        abPoints.b = audio.currentTime;
+        updateABTimes();
+      });
+      abReset.addEventListener('click', () => {
+        abPoints.a = null;
+        abPoints.b = null;
+        updateABTimes();
+      });
+      backward5s.addEventListener('click', () => {
+        audio.currentTime = Math.max(0, audio.currentTime - 5);
+      });
+      forward5s.addEventListener('click', () => {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+      });
+      progressContainer.addEventListener('click', setProgress);
+      playlistInput.addEventListener('change', (e) => {
+        playlist = Array.from(e.target.files).map(file => ({
+          name: file.name,
+          url: URL.createObjectURL(file),
+        }));
+        playlistUI.innerHTML = playlist.map((file, index) => {
+          const audioTemp = new Audio(file.url);
+          audioTemp.addEventListener('loadedmetadata', () => {
+            const duration = formatTime(audioTemp.duration);
+            document.querySelector(`#track-duration-${index}`).textContent = duration;
+          });
+          return `<li data-index="${index}">
             ${file.name} 
             <span id="track-duration-${index}" style="float: right;　display: inline-block;">Loading...</span>
           </li>`;
-}).join('');
-
-      loadTrack(0);
-    });
-    playlistUI.addEventListener('click', (e) => {
-      const index = e.target.dataset.index;
-      if (index !== undefined) {
-        loadTrack(Number(index));
-        audio.play();
-      }
-    });
-    // Initial AB points display update
-    updateABTimes();
-  </script>
-    <script>
-    document.querySelector("#selectbutton").addEventListener("click", () => {
-  document.querySelector("input").click();
-});
-  </script>
- <script>
-  let draggedItemIndex = null; // ドラッグ中のアイテムのインデックス
-
-  // ドラッグ開始時のイベント
-  playlistUI.addEventListener("dragstart", (e) => {
-    draggedItemIndex = parseInt(e.target.dataset.index, 10); // ドラッグ中のアイテムのインデックスを保存
-    e.target.classList.add("dragging");
-  });
-
-  // ドラッグ中のイベント
-  playlistUI.addEventListener("dragover", (e) => {
-    e.preventDefault(); // デフォルト動作を無効化（ドロップを許可）
-    const afterElement = getDragAfterElement(playlistUI, e.clientY);
-    const draggable = document.querySelector(".dragging");
-    if (afterElement == null) {
-      playlistUI.appendChild(draggable);
-    } else {
-      playlistUI.insertBefore(draggable, afterElement);
-    }
-  });
-
-  // ドロップ時のイベント
-  playlistUI.addEventListener("drop", (e) => {
-    e.preventDefault();
-    const droppedItemIndex = [...playlistUI.children].indexOf(
-      document.querySelector(".dragging")
-    );
-    e.target.classList.remove("dragging");
-
-    // 配列内の順序を更新
-    const draggedItem = playlist.splice(draggedItemIndex, 1)[0];
-    playlist.splice(droppedItemIndex, 0, draggedItem);
-
-    // 更新された順序を反映させるために`dataset.index`を再設定
-    [...playlistUI.children].forEach((item, index) => {
-      item.dataset.index = index;
-    });
-
-    // 現在のトラックのインデックスを修正
-    if (currentIndex === draggedItemIndex) {
-      currentIndex = droppedItemIndex;
-    } else if (
-      draggedItemIndex < currentIndex &&
-      droppedItemIndex >= currentIndex
-    ) {
-      currentIndex -= 1;
-    } else if (
-      draggedItemIndex > currentIndex &&
-      droppedItemIndex <= currentIndex
-    ) {
-      currentIndex += 1;
-    }
-
-    // 現在のトラックを再ロード
-    loadTrack(currentIndex);
-  });
-
-  // ドラッグ終了時にクラスを削除
-  playlistUI.addEventListener("dragend", (e) => {
-    e.target.classList.remove("dragging");
-  });
-
-  // ドラッグの挿入位置を取得する関数
-  function getDragAfterElement(container, y) {
-    const draggableElements = [
-      ...container.querySelectorAll("li:not(.dragging)"),
-    ];
-
-    return draggableElements.reduce(
-      (closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-          return { offset: offset, element: child };
-        } else {
-          return closest;
+        }).join('');
+        loadTrack(0);
+      });
+      playlistUI.addEventListener('click', (e) => {
+        const index = e.target.dataset.index;
+        if (index !== undefined) {
+          loadTrack(Number(index));
+          audio.play();
         }
-      },
-      { offset: Number.NEGATIVE_INFINITY }
-    ).element;
-  }
-
-  // プレイリスト読み込み時に各アイテムをドラッグ可能に設定
-  playlistInput.addEventListener("change", (e) => {
-    playlist = Array.from(e.target.files).map((file) => ({
-      name: file.name,
-      url: URL.createObjectURL(file),
-    }));
-    playlistUI.innerHTML = playlist
-      .map(
-        (file, index) =>
-          `<li data-index="${index}" draggable="true">${file.name}<span id="track-duration-${index}" style="float: right; display: inline-block;">Loading...</span></li>`
-      )
-      .join("");
-    loadTrack(0);
-  });
-</script>
-
+      });
+      // Initial AB points display update
+      updateABTimes();
+    </script>
+    <script>
+      document.querySelector("#selectbutton").addEventListener("click", () => {
+        document.querySelector("input").click();
+      });
+    </script>
+    <script>
+      let draggedItemIndex = null; // ドラッグ中のアイテムのインデックス
+      // ドラッグ開始時のイベント
+      playlistUI.addEventListener("dragstart", (e) => {
+        draggedItemIndex = parseInt(e.target.dataset.index, 10); // ドラッグ中のアイテムのインデックスを保存
+        e.target.classList.add("dragging");
+      });
+      // ドラッグ中のイベント
+      playlistUI.addEventListener("dragover", (e) => {
+        e.preventDefault(); // デフォルト動作を無効化（ドロップを許可）
+        const afterElement = getDragAfterElement(playlistUI, e.clientY);
+        const draggable = document.querySelector(".dragging");
+        if (afterElement == null) {
+          playlistUI.appendChild(draggable);
+        } else {
+          playlistUI.insertBefore(draggable, afterElement);
+        }
+      });
+      // ドロップ時のイベント
+      playlistUI.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const droppedItemIndex = [...playlistUI.children].indexOf(
+          document.querySelector(".dragging")
+        );
+        e.target.classList.remove("dragging");
+        // 配列内の順序を更新
+        const draggedItem = playlist.splice(draggedItemIndex, 1)[0];
+        playlist.splice(droppedItemIndex, 0, draggedItem);
+        // 更新された順序を反映させるために`dataset.index`を再設定
+        [...playlistUI.children].forEach((item, index) => {
+          item.dataset.index = index;
+        });
+        // 現在のトラックのインデックスを修正
+        if (currentIndex === draggedItemIndex) {
+          currentIndex = droppedItemIndex;
+        } else if (
+          draggedItemIndex < currentIndex &&
+          droppedItemIndex >= currentIndex
+        ) {
+          currentIndex -= 1;
+        } else if (
+          draggedItemIndex > currentIndex &&
+          droppedItemIndex <= currentIndex
+        ) {
+          currentIndex += 1;
+        }
+        // 現在のトラックを再ロード
+        loadTrack(currentIndex);
+      });
+      // ドラッグ終了時にクラスを削除
+      playlistUI.addEventListener("dragend", (e) => {
+        e.target.classList.remove("dragging");
+      });
+      // ドラッグの挿入位置を取得する関数
+      function getDragAfterElement(container, y) {
+        const draggableElements = [
+          ...container.querySelectorAll("li:not(.dragging)"),
+        ];
+        return draggableElements.reduce(
+          (closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+              return {
+                offset: offset,
+                element: child
+              };
+            } else {
+              return closest;
+            }
+          }, {
+            offset: Number.NEGATIVE_INFINITY
+          }
+        ).element;
+      }
+      // プレイリスト読み込み時に各アイテムをドラッグ可能に設定
+      playlistInput.addEventListener("change", (e) => {
+        playlist = Array.from(e.target.files).map((file) => ({
+          name: file.name,
+          url: URL.createObjectURL(file),
+        }));
+        playlistUI.innerHTML = playlist
+          .map(
+            (file, index) =>
+            `<li data-index="${index}" draggable="true">${file.name}<span id="track-duration-${index}" style="float: right; display: inline-block;">Loading...</span></li>`
+          )
+          .join("");
+        loadTrack(0);
+      });
+    </script>
 
 </body>
 
