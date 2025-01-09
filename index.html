@@ -676,6 +676,82 @@
       document.querySelector("input").click();
     });
     renderPlaylist();
+    
+        function renderPlaylist() {
+      playlistUI.innerHTML = '';
+      playlist.forEach((track, index) => {
+        const li = document.createElement('li');
+        li.dataset.index = index;
+        li.setAttribute('draggable', true);
+        li.addEventListener('dragstart', handleDragStart);
+        li.addEventListener('dragover', handleDragOver);
+        li.addEventListener('drop', handleDrop);
+        li.addEventListener('dragend', handleDragEnd);
+        const trackDuration = track.duration ? formatTime(track.duration) : "Loading...";
+        li.innerHTML = `
+          <span>${track.name}</span>
+          <span style="margin-left: auto; margin-right: 10px;">${trackDuration}</span>
+          <button class="delete-btn" onclick="deleteTrack(${index})">Delete</button>
+        `;
+        playlistUI.appendChild(li);
+        // Attempt to load duration if not available
+        if (!track.duration) {
+          const tempAudio = new Audio(track.url);
+          tempAudio.addEventListener('loadedmetadata', () => {
+            track.duration = tempAudio.duration;
+            savePlaylist();
+            renderPlaylist();
+          });
+        }
+      });
+      updatePlaylistHighlight();
+    }
+
+    function savePlaylist() {
+      localStorage.setItem('savedPlaylist', JSON.stringify(playlist));
+      localStorage.setItem('currentIndex', currentIndex);
+    }
+
+    function loadSavedPlaylist() {
+      const savedPlaylist = JSON.parse(localStorage.getItem('savedPlaylist')) || [];
+      const savedIndex = localStorage.getItem('currentIndex');
+      playlist = savedPlaylist;
+      currentIndex = savedIndex ? parseInt(savedIndex, 10) : 0;
+      renderPlaylist();
+      if (playlist.length > 0) {
+        loadTrack(currentIndex);
+      }
+    }
+
+    playlistInput.addEventListener('change', (e) => {
+      playlist = Array.from(e.target.files).map(file => ({
+        name: file.name,
+        url: URL.createObjectURL(file),
+      }));
+      savePlaylist();
+      renderPlaylist();
+      loadTrack(0);
+    });
+
+    function deleteTrack(index) {
+      playlist.splice(index, 1);
+      if (index === currentIndex) {
+        if (playlist.length === 0) {
+          audio.pause();
+          currentTrackName.textContent = 'No track playing';
+          currentIndex = 0;
+        } else {
+          currentIndex = Math.min(index, playlist.length - 1);
+          loadTrack(currentIndex);
+        }
+      } else if (index < currentIndex) {
+        currentIndex--;
+      }
+      savePlaylist();
+      renderPlaylist();
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSavedPlaylist);
   </script>
 </body>
 
