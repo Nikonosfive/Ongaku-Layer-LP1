@@ -1,14 +1,25 @@
-   
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ongaku Layer LP1.2</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="img/logo.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="img/logo.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <title>Ongaku Layer LP1.2 by T.A Design Room.</title>
   <style>
+    *{
+      font-family: "Roboto", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
       background-color: #dddddd
         /*#f4f4f9*/
       ;
@@ -110,7 +121,6 @@
       cursor: pointer;
       max-width: 80vw;
       display: inline-block;
-      width: 50px;
       z-index: 3;
       font-size: 0.8rem;
       height: 0.8rem;
@@ -120,7 +130,6 @@
       vertical-align: middle;
     }
 
-  
     .input {
       display: none;
       width: 100%;
@@ -133,8 +142,8 @@
     }
 
     #currentTime {
-        display: flex;
-  justify-content: flex-end;
+      display: flex;
+      justify-content: flex-end;
       padding: 0px;
       margin: 0px;
       padding-right: 20px;
@@ -317,16 +326,16 @@
     }
 
     .delete-btn {
-       vertical-align: middle;
-       background: linear-gradient(#33AEFF, #007BFF);
-       color: white;
-       border: none;
-       border-radius: 5px;
-       cursor: pointer;
-       font-size: 0.6rem;
-       height: 1rem;
-       margin-right: 0.1rem;
-       align-items: center;
+      vertical-align: middle;
+      background: linear-gradient(#33AEFF, #007BFF);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.6rem;
+      height: 1rem;
+      margin-right: 0.1rem;
+      align-items: center;
     }
 
     .delete-btn:hover {
@@ -367,12 +376,12 @@
             <option value="2" class="tooltip">2x</option>
           </select>
 
-          <button id="backward5s" class="tooltip6"><span class="tooltip-text6">5秒戻る</span>⏪ 5s</button>
-          <button id="forward5s" class="tooltip7"><span class="tooltip-text7">5秒進む</span>5s ⏩</button>
+          <button id="backward5s" class="tooltip6"><span class="tooltip-text6">5秒戻る</span>⏪5s</button>
+          <button id="forward5s" class="tooltip7"><span class="tooltip-text7">5秒進む</span>5s⏩</button>
           <button id="abSetA" class="tooltip8"><span class="tooltip-text8">リピート始点を設定</span>A</button>
           <button id="abSetB" class="tooltip9"><span class="tooltip-text9">リピート終点を設定</span>B</button>
-          <button id="abReset" class="tooltip10"><span class="tooltip-text10">始点 / 終点をリセット</span>🗑️ A / B</button>
-          <div class="divbutton" id="selectbutton">Input</div>
+          <button id="abReset" class="tooltip10"><span class="tooltip-text10">始点 / 終点をリセット</span>🗑️A/B</button>
+          <div class="divbutton" id="selectbutton">📁</div>
         </div>
         <div>
 
@@ -490,28 +499,24 @@
         }
       });
     }
-    
+
     function renderPlaylist() {
       playlistUI.innerHTML = '';
       playlist.forEach((track, index) => {
         const li = document.createElement('li');
-        
-                        li.dataset.index = index;
+        li.dataset.index = index;
         li.setAttribute('draggable', true);
         li.addEventListener('dragstart', handleDragStart);
         li.addEventListener('dragover', handleDragOver);
         li.addEventListener('drop', handleDrop);
         li.addEventListener('dragend', handleDragEnd);
-
         const trackDuration = track.duration ? formatTime(track.duration) : "Loading...";
-
         li.innerHTML = `
           <span>${track.name}</span>
           <span style="margin-left: auto; margin-right: 10px;">${trackDuration}</span>
           <button class="delete-btn" onclick="deleteTrack(${index})">Delete</button>
         `;
         playlistUI.appendChild(li);
-
         // Attempt to load duration if not available
         if (!track.duration) {
           const tempAudio = new Audio(track.url);
@@ -585,11 +590,16 @@
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
         if (offset < 0 && offset > closest.offset) {
-          return { offset, element: child };
+          return {
+            offset,
+            element: child
+          };
         } else {
           return closest;
         }
-      }, { offset: Number.NEGATIVE_INFINITY }).element;
+      }, {
+        offset: Number.NEGATIVE_INFINITY
+      }).element;
     }
 
     function updatePlaylistHighlight() {
@@ -597,7 +607,6 @@
         li.classList.toggle('nowPlaying', index === currentIndex);
       });
     }
-
     audio.addEventListener('timeupdate', () => {
       updateProgress();
       if (abPoints.a !== null && abPoints.b !== null) {
@@ -664,14 +673,11 @@
     });
     // Initial AB points display update
     updateABTimes();
-
     document.querySelector("#selectbutton").addEventListener("click", () => {
       document.querySelector("input").click();
     });
-
     renderPlaylist();
   </script>
 </body>
 
 </html>
-
