@@ -676,7 +676,6 @@
       document.querySelector("input").click();
     });
     renderPlaylist();
-    
         function renderPlaylist() {
       playlistUI.innerHTML = '';
       playlist.forEach((track, index) => {
@@ -708,14 +707,23 @@
     }
 
     function savePlaylist() {
-      localStorage.setItem('savedPlaylist', JSON.stringify(playlist));
+      const playlistToSave = playlist.map(track => ({
+        name: track.name,
+        url: track.url,
+        duration: track.duration || null
+      }));
+      localStorage.setItem('savedPlaylist', JSON.stringify(playlistToSave));
       localStorage.setItem('currentIndex', currentIndex);
     }
 
     function loadSavedPlaylist() {
       const savedPlaylist = JSON.parse(localStorage.getItem('savedPlaylist')) || [];
       const savedIndex = localStorage.getItem('currentIndex');
-      playlist = savedPlaylist;
+      playlist = savedPlaylist.map(track => ({
+        name: track.name,
+        url: track.url,
+        duration: track.duration
+      }));
       currentIndex = savedIndex ? parseInt(savedIndex, 10) : 0;
       renderPlaylist();
       if (playlist.length > 0) {
@@ -723,10 +731,54 @@
       }
     }
 
+    function saveCurrentTrack() {
+      localStorage.setItem('currentIndex', currentIndex);
+    }
+
+    function loadTrack(index) {
+      const track = playlist[index];
+      if (!track) return;
+      currentIndex = index;
+      saveCurrentTrack();
+      audio.src = track.url;
+      currentTrackName.textContent = track.name;
+      audio.load();
+      playPauseBtn.textContent = '▶️';
+      updatePlaylistHighlight();
+    }
+
+    audio.addEventListener('ended', () => {
+      if (isRepeating === 'one') {
+        audio.currentTime = 0;
+        audio.play();
+      } else if (isRepeating === 'all' || currentIndex < playlist.length - 1) {
+        nextTrack();
+      }
+    });
+
+    function nextTrack() {
+      if (isShuffling) {
+        currentIndex = Math.floor(Math.random() * playlist.length);
+      } else {
+        currentIndex = (currentIndex + 1) % playlist.length;
+      }
+      saveCurrentTrack();
+      loadTrack(currentIndex);
+      audio.play();
+    }
+
+    function prevTrack() {
+      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      saveCurrentTrack();
+      loadTrack(currentIndex);
+      audio.play();
+    }
+
     playlistInput.addEventListener('change', (e) => {
       playlist = Array.from(e.target.files).map(file => ({
         name: file.name,
         url: URL.createObjectURL(file),
+        duration: null
       }));
       savePlaylist();
       renderPlaylist();
@@ -756,3 +808,4 @@
 </body>
 
 </html>
+
